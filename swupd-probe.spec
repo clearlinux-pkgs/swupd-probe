@@ -4,13 +4,14 @@
 #
 Name     : swupd-probe
 Version  : 2
-Release  : 5
+Release  : 6
 URL      : https://github.com/clearlinux/swupd-probe/archive/v2.tar.gz
 Source0  : https://github.com/clearlinux/swupd-probe/archive/v2.tar.gz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : GPL-3.0
 Requires: swupd-probe-bin
+Requires: swupd-probe-autostart
 Requires: swupd-probe-config
 Requires: swupd-probe-doc
 BuildRequires : pkgconfig(systemd)
@@ -21,6 +22,14 @@ This project creates an interface between swupd-client and
 telemetrics-client. The goal of the project is to provide
 highly reliable and safe telemetry of swupd-client events
 to telemetrics-client.
+
+%package autostart
+Summary: autostart components for the swupd-probe package.
+Group: Default
+
+%description autostart
+autostart components for the swupd-probe package.
+
 
 %package bin
 Summary: bin components for the swupd-probe package.
@@ -52,7 +61,7 @@ doc components for the swupd-probe package.
 
 %build
 export LANG=C
-export SOURCE_DATE_EPOCH=1486428394
+export SOURCE_DATE_EPOCH=1486484323
 %autogen --disable-static
 make V=1  %{?_smp_mflags}
 
@@ -64,16 +73,20 @@ export no_proxy=localhost
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1486428394
+export SOURCE_DATE_EPOCH=1486484323
 rm -rf %{buildroot}
 %make_install
 ## make_install_append content
-mkdir -p %{buildroot}/usr/lib/systemd/systemd/multi-user.target.wants
-ln -s ../swupd-probe.path %{buildroot}/usr/lib/systemd/systemd/multi-user.target.wants/swupd-probe.path
+mkdir -p %{buildroot}/usr/lib/systemd/system/multi-user.target.wants
+ln -s ../swupd-probe.path %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/swupd-probe.path
 ## make_install_append end
 
 %files
 %defattr(-,root,root,-)
+
+%files autostart
+%defattr(-,root,root,-)
+/usr/lib/systemd/system/multi-user.target.wants/swupd-probe.path
 
 %files bin
 %defattr(-,root,root,-)
@@ -81,9 +94,9 @@ ln -s ../swupd-probe.path %{buildroot}/usr/lib/systemd/systemd/multi-user.target
 
 %files config
 %defattr(-,root,root,-)
+%exclude /usr/lib/systemd/system/multi-user.target.wants/swupd-probe.path
 /usr/lib/systemd/system/swupd-probe.path
 /usr/lib/systemd/system/swupd-probe.service
-/usr/lib/systemd/systemd/multi-user.target.wants/swupd-probe.path
 
 %files doc
 %defattr(-,root,root,-)

@@ -1,2 +1,2 @@
-mkdir -p %{buildroot}/usr/lib/systemd/systemd/multi-user.target.wants
-ln -s ../swupd-probe.path %{buildroot}/usr/lib/systemd/systemd/multi-user.target.wants/swupd-probe.path
+mkdir -p %{buildroot}/usr/lib/systemd/system/multi-user.target.wants
+ln -s ../swupd-probe.path %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/swupd-probe.path
