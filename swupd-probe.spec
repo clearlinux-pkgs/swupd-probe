@@ -4,7 +4,7 @@
 #
 Name     : swupd-probe
 Version  : 2
-Release  : 6
+Release  : 7
 URL      : https://github.com/clearlinux/swupd-probe/archive/v2.tar.gz
 Source0  : https://github.com/clearlinux/swupd-probe/archive/v2.tar.gz
 Summary  : No detailed summary available
