@@ -4,7 +4,7 @@
 #
 Name     : swupd-probe
 Version  : 2
-Release  : 7
+Release  : 8
 URL      : https://github.com/clearlinux/swupd-probe/archive/v2.tar.gz
 Source0  : https://github.com/clearlinux/swupd-probe/archive/v2.tar.gz
 Summary  : No detailed summary available
@@ -60,8 +60,11 @@ doc components for the swupd-probe package.
 %setup -q -n swupd-probe-2
 
 %build
+export http_proxy=http://127.0.0.1:9/
+export https_proxy=http://127.0.0.1:9/
+export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1486484323
+export SOURCE_DATE_EPOCH=1509422756
 %autogen --disable-static
 make V=1  %{?_smp_mflags}
 
@@ -69,11 +72,11 @@ make V=1  %{?_smp_mflags}
 export LANG=C
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
-export no_proxy=localhost
+export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1486484323
+export SOURCE_DATE_EPOCH=1509422756
 rm -rf %{buildroot}
 %make_install
 ## make_install_append content
