@@ -4,17 +4,19 @@
 #
 Name     : swupd-probe
 Version  : 2
-Release  : 11
+Release  : 12
 URL      : https://github.com/clearlinux/swupd-probe/archive/v2.tar.gz
 Source0  : https://github.com/clearlinux/swupd-probe/archive/v2.tar.gz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : GPL-3.0
-Requires: swupd-probe-bin
-Requires: swupd-probe-autostart
-Requires: swupd-probe-config
-Requires: swupd-probe-doc
+Requires: swupd-probe-autostart = %{version}-%{release}
+Requires: swupd-probe-bin = %{version}-%{release}
+Requires: swupd-probe-license = %{version}-%{release}
+Requires: swupd-probe-man = %{version}-%{release}
+Requires: swupd-probe-services = %{version}-%{release}
 BuildRequires : pkgconfig(systemd)
+Patch1: 0001-Modernize-opt-in-check.patch
 
 %description
 ## swupd-probe
@@ -34,55 +36,76 @@ autostart components for the swupd-probe package.
 %package bin
 Summary: bin components for the swupd-probe package.
 Group: Binaries
-Requires: swupd-probe-config
+Requires: swupd-probe-license = %{version}-%{release}
+Requires: swupd-probe-services = %{version}-%{release}
 
 %description bin
 bin components for the swupd-probe package.
 
 
-%package config
-Summary: config components for the swupd-probe package.
+%package license
+Summary: license components for the swupd-probe package.
 Group: Default
 
-%description config
-config components for the swupd-probe package.
+%description license
+license components for the swupd-probe package.
 
 
-%package doc
-Summary: doc components for the swupd-probe package.
-Group: Documentation
+%package man
+Summary: man components for the swupd-probe package.
+Group: Default
 
-%description doc
-doc components for the swupd-probe package.
+%description man
+man components for the swupd-probe package.
+
+
+%package services
+Summary: services components for the swupd-probe package.
+Group: Systemd services
+
+%description services
+services components for the swupd-probe package.
 
 
 %prep
 %setup -q -n swupd-probe-2
+cd %{_builddir}/swupd-probe-2
+%patch1 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1509422756
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1600403662
+export GCC_IGNORE_WERROR=1
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 %autogen --disable-static
-make V=1  %{?_smp_mflags}
+make  %{?_smp_mflags}
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-make VERBOSE=1 V=1 %{?_smp_mflags} check
+make %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1509422756
+export SOURCE_DATE_EPOCH=1600403662
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/swupd-probe
+cp %{_builddir}/swupd-probe-2/COPYING %{buildroot}/usr/share/package-licenses/swupd-probe/8624bcdae55baeef00cd11d5dfcfa60f68710a02
 %make_install
-## make_install_append content
+## install_append content
 mkdir -p %{buildroot}/usr/lib/systemd/system/multi-user.target.wants
 ln -s ../swupd-probe.path %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/swupd-probe.path
-## make_install_append end
+## install_append end
 
 %files
 %defattr(-,root,root,-)
@@ -95,12 +118,16 @@ ln -s ../swupd-probe.path %{buildroot}/usr/lib/systemd/system/multi-user.target.
 %defattr(-,root,root,-)
 /usr/bin/swupd-probe
 
-%files config
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/swupd-probe/8624bcdae55baeef00cd11d5dfcfa60f68710a02
+
+%files man
+%defattr(0644,root,root,0755)
+/usr/share/man/man1/swupd-probe.1
+
+%files services
 %defattr(-,root,root,-)
 %exclude /usr/lib/systemd/system/multi-user.target.wants/swupd-probe.path
 /usr/lib/systemd/system/swupd-probe.path
 /usr/lib/systemd/system/swupd-probe.service
-
-%files doc
-%defattr(-,root,root,-)
-%doc /usr/share/man/man1/*

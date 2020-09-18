@@ -1,0 +1,41 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Patrick McCarty <patrick.mccarty@intel.com>
+Date: Fri, 18 Sep 2020 04:22:08 +0000
+Subject: [PATCH] Modernize opt-in check
+
+The presence of /etc/telemetrics/opt-in is the current method of
+checking the opt-in selection, rather than the absence of
+/etc/telemetrics/opt-out.
+
+For reference: https://github.com/clearlinux/telemetrics-client/pull/158
+
+Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
+---
+ swupd-probe.path    | 2 +-
+ swupd-probe.service | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/swupd-probe.path b/swupd-probe.path
+index ef57daa..b5db8d1 100644
+--- a/swupd-probe.path
++++ b/swupd-probe.path
+@@ -1,6 +1,6 @@
+ [Unit]
+ Description=swupd telemetry probe
+-ConditionPathExists=!/etc/telemetrics/opt-out
++ConditionPathExists=/etc/telemetrics/opt-in
+ Requires=telemd.socket
+ After=telemd.socket
+ 
+diff --git a/swupd-probe.service b/swupd-probe.service
+index dca5ca2..0eadee7 100644
+--- a/swupd-probe.service
++++ b/swupd-probe.service
+@@ -1,6 +1,6 @@
+ [Unit]
+ Description=swupd telemetry probe
+-ConditionPathExists=!/etc/telemetrics/opt-out
++ConditionPathExists=/etc/telemetrics/opt-in
+ 
+ [Service]
+ Type=simple
