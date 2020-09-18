@@ -1,0 +1,30 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Patrick McCarty <patrick.mccarty@intel.com>
+Date: Fri, 18 Sep 2020 16:03:51 +0000
+Subject: [PATCH] Fix socket unit dependencies
+
+After `telemd` was split into two services, the socket unit for
+`telemprobd` is now the correct dependency.
+
+Fixes https://github.com/clearlinux/swupd-probe/issues/3
+
+Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
+---
+ swupd-probe.path | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/swupd-probe.path b/swupd-probe.path
+index b5db8d1..04d4134 100644
+--- a/swupd-probe.path
++++ b/swupd-probe.path
+@@ -1,8 +1,8 @@
+ [Unit]
+ Description=swupd telemetry probe
+ ConditionPathExists=/etc/telemetrics/opt-in
+-Requires=telemd.socket
+-After=telemd.socket
++Requires=telemprobd.socket
++After=telemprobd.socket
+ 
+ [Path]
+ DirectoryNotEmpty=/var/lib/swupd/telemetry

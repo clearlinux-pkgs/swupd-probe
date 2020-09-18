@@ -4,7 +4,7 @@
 #
 Name     : swupd-probe
 Version  : 2
-Release  : 12
+Release  : 13
 URL      : https://github.com/clearlinux/swupd-probe/archive/v2.tar.gz
 Source0  : https://github.com/clearlinux/swupd-probe/archive/v2.tar.gz
 Summary  : No detailed summary available
@@ -17,6 +17,7 @@ Requires: swupd-probe-man = %{version}-%{release}
 Requires: swupd-probe-services = %{version}-%{release}
 BuildRequires : pkgconfig(systemd)
 Patch1: 0001-Modernize-opt-in-check.patch
+Patch2: 0002-Fix-socket-unit-dependencies.patch
 
 %description
 ## swupd-probe
@@ -71,13 +72,14 @@ services components for the swupd-probe package.
 %setup -q -n swupd-probe-2
 cd %{_builddir}/swupd-probe-2
 %patch1 -p1
+%patch2 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1600403662
+export SOURCE_DATE_EPOCH=1600445331
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -97,7 +99,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1600403662
+export SOURCE_DATE_EPOCH=1600445331
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/swupd-probe
 cp %{_builddir}/swupd-probe-2/COPYING %{buildroot}/usr/share/package-licenses/swupd-probe/8624bcdae55baeef00cd11d5dfcfa60f68710a02
